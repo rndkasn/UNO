@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program </title>
+    <link rel="icon" href="microchip.png" type="image/png">
+<head>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- highlight.js style -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+    <!-- Project main CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Tambahan ringan khusus halaman program */
+        .program-header {
+            padding: 28px;
+            text-align: center;
+            background: linear-gradient(135deg, #6fd7f1, #350742);
+            color: #fff;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .program-content {
+            padding: 28px;
+            background: #fff;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 16px;
+            overflow: auto;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            color: #ddd;
+        }
+
+        .code-filename {
+            color: #bbb;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .copy-btn {
+            padding: 8px 12px;
+            background: #667eea;
+            color: #fff;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .pinout-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        .pinout-table th,
+        .pinout-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .nav-row {
+            margin-top: 18px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        @media (max-width:768px) {
+            .program-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="program-header">
+            <h1><i class="fas fa-microchip"></i> Program Arduino</h1>
+            <p style="margin-top:6px;opacity:0.9">Kode lengkap, wiring, dan cara pemakaian singkat</p>
+        </div>
+
+        <div class="program-content">
+            <section>
+                <h2><i class="fas fa-plug"></i> Wiring / Pinout</h2>
+                <p style="color:#555">Tabel berikut menunjukkan sambungan standar antara Arduino, sensor hujan, servo,
+                    dan LED indikator.</p>
+
+                <table class="pinout-table">
+                    <thead>
+                        <tr>
+                            <th>Komponen</th>
+                            <th>Pin Arduino</th>
+                            <th>Koneksi</th>
+                            <th>Warna Kabel</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rain Sensor</td>
+                            <td>5V</td>
+                            <td>VCC → 3,3V</td>
+                            <td>Merah</td>
+                            <td>Power sensor</td>
+                        </tr>
+                        <tr>
+                            <td>Rain Sensor (GND)</td>
+                            <td>GND</td>
+                            <td>GND → GND</td>
+                            <td>Orange</td>
+                            <td>Ground bersama</td>
+                        </tr>
+                        <tr>
+                            <td>Rain Sensor (Analog)</td>
+                            <td>A0</td>
+                            <td>A0 → OUT</td>
+                            <td>Coklat</td>
+                            <td>Membaca nilai analog (0–1023)</td>
+                        </tr>
+
+                         <tr>
+                            <td>Micro Servo</td>
+                            <td>5V</td>
+                            <td>VCC → 5V</td>
+                            <td>Merah</td>
+                            <td>Power servo</td>
+                        </tr>
+                        <tr>
+                            <td>Micro servo (GND)</td>
+                            <td>GND</td>
+                            <td>GND → GND</td>
+                            <td>Coklat</td>
+                            <td>Ground bersama</td>
+                        </tr>
+                        <tr>
+                            <td>Micro Servo (signal)</td>
+                            <td>12</td>
+                            <td>Sig → 12</td>
+                            <td>Kuning</td>
+                            <td>Menggerakan servo 90°</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+               
+            </section>
+
+            <section class="code-section code-area">
+                <h2><i class="fas fa-code"></i> Kode Program (Arduino)</h2>
+
+                <div class="code-container">
+                    <div class="code-block">
+                        <div class="code-header">
+                            <span class="code-filename">Jemuran_Otomatis.ino</span>
+                            <button class="copy-btn" onclick="copyArduinoCode(event)"><i class="fas fa-copy"></i> Salin Kode</button>
+                        </div>
+
+                        <pre><code id="arduino-code" class="language-cpp">#include &lt;Servo.h&gt;
+
+Servo servo;
+
+const int rainPin = A0;     // pin rain sensor
+int rainValue = 0;          // nilai analog dari sensor
+
+void setup() {
+    servo.attach(12);         // servo pada pin 12
+    Serial.begin(9600);
+}
+
+void loop() {
+  rainValue = analogRead(rainPin);   // baca sensor
+  
+  Serial.print("Nilai Hujan: ");
+  Serial.println(rainValue);
+
+    if (rainValue &lt; 500) {   // CERAH
+        servo.write(90);         // SERVO TERBUKA KARENA CERAH
+        Serial.println("Terang");
+    } else {                   // HUJAN
+        servo.write(0);          // SERVO TERTUTUP KARENA HUJAN
+        Serial.println("Ujan");
+    }
+
+    delay(500);
+}
+</code></pre>
+                    </div>
+                </div>
+
+                <p style="color:#666;margin-top:8px">Catatan: saat menyalin ke Arduino IDE, ganti entitas HTML seperti
+                    &amp;lt; dan &amp;gt; menjadi &lt; dan &gt; (IDE butuh bracket biasa).</p>
+            </section>
+
+            <!-- Dokumentasi: video demo + galeri foto -->
+            <section class="content-section documentation">
+                <h2><i class="fas fa-book-open"></i> Dokumentasi Proyek & Tutorial</h2>
+                <p style="color:#555">Cara Penggunaan:Basahi rain sensor dengan air,secara otomatis servo akan tertutup</p>
+
+                <div class="doc-media">
+                    <div class="video-wrapper">
+                        <!-- Ganti VIDEO_ID dengan id video YouTube Anda -->
+                        <iframe src="VIDEO.mp4" title="Demo Jemuran Otomatis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+
+                    <div class="doc-gallery">
+                        <!-- Ganti nama file gambar sesuai yang Anda upload -->
+                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_413571da.jpg" alt="" class="doc-photo">
+                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_743e8dbe.jpg" alt="" class="doc-photo">
+                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_911f6dae.jpg" alt="" class="doc-photo">
+                    </div>
+                </div>
+            </section>
+
+            <div class="nav-row">
+                <a href="index.html" class="btn-primary"><i class="fas fa-home"></i> Kembali ke Beranda</a>
+                <a href="video.html" onclick="window.location.reload()" class="btn-primary"
+                    style="background:#ffd700;color:#333"><i class="fas fa-sync"></i> Refresh</a>
+            </div>
+        </div>
+
+         <footer class="footer">
+      <p>&copy; 2025 - Jemuran Otomatis Berbasis Arduino</p>
+      <p>SMK PGRI 1 NGAWI | Teknik Komputer Dan Jaringan</p>
+    </footer>
+    </div>
+
+    <!-- dependensi -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+        // highlight kode
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
+        });
+
+        function copyArduinoCode(e) {
+            const codeElem = document.getElementById('arduino-code');
+            const text = codeElem.innerText || codeElem.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = e.currentTarget;
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
+                btn.disabled = true;
+                setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1600);
+            }).catch(err => alert('Gagal menyalin: ' + err));
+        }
+    </script>
+
+    <!-- include project script (animasi, dsb) jika ada -->
+    <script src="script.js"></script>
+</body>
+
+</html>
