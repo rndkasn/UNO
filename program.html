@@ -172,7 +172,6 @@
                     <div class="code-block">
                         <div class="code-header">
                             <span class="code-filename">Jemuran_Otomatis.ino</span>
-                            <button class="copy-btn" onclick="copyArduinoCode(event)"><i class="fas fa-copy"></i> Salin Kode</button>
                         </div>
 
                         <pre><code id="arduino-code" class="language-cpp">#include &lt;Servo.h&gt;
@@ -252,21 +251,11 @@ void loop() {
             document.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
         });
 
-        function copyArduinoCode(e) {
-            const codeElem = document.getElementById('arduino-code');
-            const text = codeElem.innerText || codeElem.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const btn = e.currentTarget;
-                const orig = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Tersalin!';
-                btn.disabled = true;
-                setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1600);
-            }).catch(err => alert('Gagal menyalin: ' + err));
-        }
     </script>
 
     <!-- include project script (animasi, dsb) jika ada -->
     <script src="script.js"></script>
 </body>
+
 
 </html>
