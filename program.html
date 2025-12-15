@@ -165,25 +165,33 @@
                
             </section>
 
-            <section class="code-section code-area">
+            <section style="margin-top:22px">
                 <h2><i class="fas fa-code"></i> Kode Program (Arduino)</h2>
 
-                <div class="code-container">
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-filename">Jemuran_Otomatis.ino</span>
-                        </div>
+                <div class="code-block">
+                                        <div class="code-header">
+                                                <span class="code-filename">Jemuran_Otomatis.ino</span>
+                                                <div style="display:flex;gap:8px;">
+                                                    <!-- copy button removed per request -->
+                                                    <button class="copy-btn" onclick="downloadArduinoCode(event)"><i class="fas fa-download"></i> Download .ino</button>
+                                                </div>
+                                        </div>
 
-                        <pre><code id="arduino-code" class="language-cpp">#include &lt;Servo.h&gt;
+                <video src=""></video>
+
+                    <pre><code id="arduino-code" class="language-cpp">#include &lt;Servo.h&gt;
+
+#include <Servo.h>
+#include 
 
 Servo servo;
 
-const int rainPin = A0;     // pin rain sensor
-int rainValue = 0;          // nilai analog dari sensor
+int rainPin = A0;     // pin rain sensor
+int rainValue;        // nilai analog dari sensor
 
 void setup() {
-    servo.attach(12);         // servo pada pin 12
-    Serial.begin(9600);
+  servo.attach(12);   // servo pada pin 12
+  Serial.begin(9600);
 }
 
 void loop() {
@@ -192,42 +200,22 @@ void loop() {
   Serial.print("Nilai Hujan: ");
   Serial.println(rainValue);
 
-    if (rainValue &lt; 500) {   // CERAH
-        servo.write(90);         // SERVO TERBUKA KARENA CERAH
-        Serial.println("Terang");
-    } else {                   // HUJAN
-        servo.write(0);          // SERVO TERTUTUP KARENA HUJAN
-        Serial.println("Ujan");
-    }
+  if (rainValue < 500) {   // CERAH
+    servo.write(90);       // SERVO TERBUKA KARENA CERAH
+    Serial.println("Terang");
+  } 
+  else {                   // HUJAN
+    servo.write(0);        // SERVO TERTUTUP KARENA HUJAN
+    Serial.println("Ujan");
+  }
 
-    delay(500);
+  delay(500);
 }
-</code></pre>
-                    </div>
+}</code></pre>
                 </div>
 
                 <p style="color:#666;margin-top:8px">Catatan: saat menyalin ke Arduino IDE, ganti entitas HTML seperti
                     &amp;lt; dan &amp;gt; menjadi &lt; dan &gt; (IDE butuh bracket biasa).</p>
-            </section>
-
-            <!-- Dokumentasi: video demo + galeri foto -->
-            <section class="content-section documentation">
-                <h2><i class="fas fa-book-open"></i> Dokumentasi Proyek & Tutorial</h2>
-                <p style="color:#555">Cara Penggunaan:Basahi rain sensor dengan air,secara otomatis servo akan tertutup</p>
-
-                <div class="doc-media">
-                    <div class="video-wrapper">
-                        <!-- Ganti VIDEO_ID dengan id video YouTube Anda -->
-                        <iframe src="VIDEO.mp4" title="Demo Jemuran Otomatis" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-
-                    <div class="doc-gallery">
-                        <!-- Ganti nama file gambar sesuai yang Anda upload -->
-                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_413571da.jpg" alt="" class="doc-photo">
-                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_743e8dbe.jpg" alt="" class="doc-photo">
-                        <img src="WhatsApp Image 2025-12-08 at 14.56.44_911f6dae.jpg" alt="" class="doc-photo">
-                    </div>
-                </div>
             </section>
 
             <div class="nav-row">
@@ -251,11 +239,38 @@ void loop() {
             document.querySelectorAll('pre code').forEach(block => hljs.highlightElement(block));
         });
 
+        // copyArduinoCode removed (copy button deleted)
+
+        function downloadArduinoCode(e) {
+            const codeElem = document.getElementById('arduino-code');
+            if (!codeElem) return alert('Kode tidak ditemukan');
+            let text = codeElem.innerText || codeElem.textContent || '';
+            // Convert HTML entities back to real chars for .ino file
+            text = text.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+
+            const filename = 'jemuran.ino.cpp';
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 500);
+
+            // simple feedback on button
+            if (e && e.currentTarget) {
+              const btn = e.currentTarget;
+              const orig = btn.innerHTML;
+              btn.innerHTML = '<i class="fas fa-check"></i> Diunduh';
+              btn.disabled = true;
+              setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1400);
+            }
+        }
     </script>
 
     <!-- include project script (animasi, dsb) jika ada -->
     <script src="script.js"></script>
 </body>
-
 
 </html>
